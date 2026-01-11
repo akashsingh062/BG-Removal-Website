@@ -28,6 +28,7 @@ const clerkWebhooks = async (req, res) => {
                     lastName: data.last_name,
                     photo: data.image_url,
                 });
+                console.log("USER CREATED EVENT RECEIVED", data.id);
                 break;
 
             case "user.updated":
