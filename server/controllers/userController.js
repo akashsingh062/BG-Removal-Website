@@ -3,7 +3,7 @@ import userModel from "../models/userModel.js"
 
 // api controller function to manage clerk user with database
 // http://localhost:4000/api/user/webhooks
-const clerkWebhooks = async () => {
+const clerkWebhooks = async (req, res) => {
     try {
         // create a svix instance with clerk webhook secret
         const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET)
