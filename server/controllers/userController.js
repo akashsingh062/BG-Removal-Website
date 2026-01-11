@@ -1,8 +1,11 @@
 import { Webhook } from "svix";
 import userModel from "../models/userModel.js";
 
+// api controller function to manage clerk user with database
+// http://localhost:4000/api/user/webhooks
 const clerkWebhooks = async (req, res) => {
     try {
+        // create a svix instance with clerk webhook secret
         const webhook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
         // Verify webhook signature
@@ -23,6 +26,7 @@ const clerkWebhooks = async (req, res) => {
                     lastName: data.last_name,
                     photo: data.image_url,
                 });
+                res.json({})
                 break;
             }
 
@@ -36,23 +40,32 @@ const clerkWebhooks = async (req, res) => {
                         photo: data.image_url,
                     }
                 );
+                res.json({})
                 break;
             }
 
             case "user.deleted": {
                 await userModel.findOneAndDelete({ clerkId: data.id });
+                res.json({})
                 break;
             }
-
-            default:
-                console.log("Unhandled Clerk event:", type);
         }
-
-        res.status(200).json({ success: true });
     } catch (error) {
         console.error("Webhook error:", error.message);
-        res.status(400).json({ success: false, message: error.message });
+        res.json({ success: false, message: error.message });
     }
 };
 
-export { clerkWebhooks };
+// API controller to get user available credits data
+const userCredits = async (req, res) => {
+    try {
+        const { clerkId } = req.body
+        const userData = await userModel.findOne({ clerkId })
+        res.json({ success: true, credits: userData.creditBalance })
+    } catch (error) {
+        console.error(error.message);
+        res.json({ success: false, message: error.message });
+    }
+}
+
+export { clerkWebhooks, userCredits };
