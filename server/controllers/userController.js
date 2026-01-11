@@ -59,7 +59,7 @@ const clerkWebhooks = async (req, res) => {
 // API controller to get user available credits data
 const userCredits = async (req, res) => {
     try {
-        const { clerkId } = req.body
+        const { clerkId } = req
         const userData = await userModel.findOne({ clerkId })
         res.json({ success: true, credits: userData.creditBalance })
     } catch (error) {
@@ -67,5 +67,6 @@ const userCredits = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 }
+
 
 export { clerkWebhooks, userCredits };

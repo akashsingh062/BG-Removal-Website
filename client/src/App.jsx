@@ -12,7 +12,7 @@ const App = () => {
     <div className="min-h-screen bg-slate-50">
       <ToastContainer
         position="bottom-center"
-        autoClose={1200}
+        autoClose={3200}
         hideProgressBar
         closeOnClick
         pauseOnHover
