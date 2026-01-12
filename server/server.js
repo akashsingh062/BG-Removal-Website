@@ -11,8 +11,17 @@ const app = express()
 await connectDB()
 
 // middlewares
-app.use(express.json())
-app.use(cors())
+app.use(express.json());
+
+app.use(
+  cors({
+    origin: [
+      "https://bg-removal-lilac-nine.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // api routes
 app.get('/', (req, res) => {
