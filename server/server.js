@@ -3,17 +3,26 @@ import "dotenv/config";
 import cors from "cors";
 import connectDB from "./configs/mongodb.js";
 import userRouter from "./routes/userRoutes.js";
-import { clerkWebhooks } from "./controllers/userController.js";
+import imageRouter from "./routes/imageRoutes.js";
 
-const PORT = process.env.PORT || 4000;
-const app = express();
+// app config
+const PORT = process.env.PORT || 4000
+const app = express()
+
 
 app.use(cors());
 await connectDB();
 
-app.get("/", (req, res) => {
-    res.send("working");
-});
+// api routes
+app.get('/', (req, res) => {
+    res.send("working")
+})
+app.use('/api/user', userRouter)
+app.use('/api/image', imageRouter)
+
+app.listen(PORT, async () => {
+    console.log("app is running on port : ", PORT)
+})
 
 app.post(
     "/api/user/webhooks",
