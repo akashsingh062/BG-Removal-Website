@@ -10,22 +10,17 @@ const clerkWebhooks = async (req, res) => {
         // create a svix instance with clerk webhook secret
         const webhook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
-        const payload = req.body; // raw buffer
-        const headers = {
+        // Verify webhook signature
+        webhook.verify(JSON.stringify(req.body), {
             "svix-id": req.headers["svix-id"],
             "svix-timestamp": req.headers["svix-timestamp"],
             "svix-signature": req.headers["svix-signature"],
-        };
+        });
 
-        // ✅ Verify signature using RAW body
-        webhook.verify(payload, headers);
-
-        // ✅ Parse AFTER verification
-        const event = JSON.parse(payload.toString());
-        const { data, type } = event;
+        const { data, type } = req.body;
 
         switch (type) {
-            case "user.created":
+            case "user.created": {
                 await userModel.create({
                     clerkId: data.id,
                     email: data.email_addresses[0].email_address,
@@ -35,8 +30,9 @@ const clerkWebhooks = async (req, res) => {
                 });
                 res.json({})
                 break;
+            }
 
-            case "user.updated":
+            case "user.updated": {
                 await userModel.findOneAndUpdate(
                     { clerkId: data.id },
                     {
@@ -48,19 +44,19 @@ const clerkWebhooks = async (req, res) => {
                 );
                 res.json({})
                 break;
+            }
 
-            case "user.deleted":
+            case "user.deleted": {
                 await userModel.findOneAndDelete({ clerkId: data.id });
                 res.json({})
                 break;
+            }
         }
-
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Webhook error:", error.message);
+        res.json({ success: false, message: error.message });
     }
-}
-
+};
 
 // API controller to get user available credits data
 const userCredits = async (req, res) => {
@@ -174,4 +170,4 @@ const verifyRazorpay = async (req, res) => {
     }
 }
 
-export { clerkWebhooks, userCredits, paymentRazorpay, verifyRazorpay }
+export { clerkWebhooks, userCredits, paymentRazorpay, verifyRazorpay };
