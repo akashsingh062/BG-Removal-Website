@@ -10,12 +10,21 @@ const PORT = process.env.PORT || 4000
 const app = express()
 await connectDB()
 
-// middlewares
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://bg-removal-lsufvf9pr-akashsingh062s-projects.vercel.app"
+];
+
 app.use(express.json());
 
 app.use(
-  cors()
+  cors({
+    origin: allowedOrigins,
+    credentials: true
+  })
 );
+
+
 
 // api routes
 app.get('/', (req, res) => {
