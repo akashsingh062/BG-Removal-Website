@@ -56,8 +56,9 @@ const clerkWebhooks = async (req, res) => {
         }
 
     }
-     catch (error) {
-    console.error("Webhook error:", error.message);
+    catch (error) {
+        console.error("Webhook error:", error.message);
+    }
 }
 
 
@@ -173,4 +174,4 @@ const verifyRazorpay = async (req, res) => {
     }
 }
 
-export { clerkWebhooks, userCredits, paymentRazorpay, verifyRazorpay };
+export { clerkWebhooks, userCredits, paymentRazorpay, verifyRazorpay }
