@@ -14,6 +14,7 @@ import twitter_icon from './twitter_icon.svg'
 import profile_img_1 from './profile_img_1.png'
 import profile_img_2 from './profile_img_2.png'
 import credit_icon from './credit_icon.png'
+import image_icon from './image_icon.svg'
 
 export const assets = {
     logo,
@@ -29,7 +30,8 @@ export const assets = {
     google_plus_icon,
     twitter_icon,
     upload_btn_icon,
-    credit_icon
+    credit_icon,
+    image_icon
 }
 
 export const testimonialsData = [
@@ -51,21 +53,21 @@ export const testimonialsData = [
 
 export const plans = [
     {
+      id: 'Starter',
+      price: 25,
+      credits: 5,
+      desc: 'Free tier to get started.'
+    },
+    {
       id: 'Basic',
-      price: 10,
-      credits: 100,
+      price: 49,
+      credits: 10,
       desc: 'Best for personal use.'
     },
     {
-      id: 'Advanced',
-      price: 50,
-      credits: 500,
-      desc: 'Best for business use.'
-    },
-    {
-      id: 'Business',
-      price: 250,
-      credits: 5000,
-      desc: 'Best for enterprise use.'
+      id: 'Pro',
+      price: 99,
+      credits: 25,
+      desc: 'Best for regular use.'
     },
   ]

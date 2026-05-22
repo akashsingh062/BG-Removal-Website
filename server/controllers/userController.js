@@ -21,13 +21,26 @@ const clerkWebhooks = async (req, res) => {
 
         switch (type) {
             case "user.created": {
-                await userModel.create({
-                    clerkId: data.id,
-                    email: data.email_addresses[0].email_address,
-                    firstName: data.first_name,
-                    lastName: data.last_name,
-                    photo: data.image_url,
-                });
+                const existingUser = await userModel.findOne({ clerkId: data.id });
+                if (existingUser) {
+                    existingUser.email = data.email_addresses[0].email_address;
+                    existingUser.firstName = data.first_name;
+                    existingUser.lastName = data.last_name;
+                    existingUser.photo = data.image_url;
+                    if (existingUser.creditBalance === undefined || existingUser.creditBalance === null) {
+                        existingUser.creditBalance = 3;
+                    }
+                    await existingUser.save();
+                } else {
+                    await userModel.create({
+                        clerkId: data.id,
+                        email: data.email_addresses[0].email_address,
+                        firstName: data.first_name,
+                        lastName: data.last_name,
+                        photo: data.image_url,
+                        creditBalance: 3,
+                    });
+                }
                 res.json({})
                 break;
             }
@@ -62,7 +75,20 @@ const clerkWebhooks = async (req, res) => {
 const userCredits = async (req, res) => {
     try {
         const { clerkId } = req
-        const userData = await userModel.findOne({ clerkId })
+        if (!clerkId) {
+            return res.json({ success: false, message: "No clerkId provided in auth token" })
+        }
+        
+        let userData = await userModel.findOne({ clerkId })
+        if (!userData) {
+            // Automatically create the user document if the Clerk webhook hasn't run yet (perfect for local development/testing)
+            userData = await userModel.create({
+                clerkId,
+                email: `${clerkId}@placeholder.com`,
+                photo: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
+                creditBalance: 3
+            })
+        }
         res.json({ success: true, credits: userData.creditBalance })
     } catch (error) {
         console.error(error.message);
@@ -89,20 +115,20 @@ const paymentRazorpay = async (req, res) => {
         let credits, plan, amount, date
 
         switch (planId) {
+            case "Starter":
+                plan = 'Starter'
+                credits = 5
+                amount = 0
+                break;
             case "Basic":
                 plan = 'Basic'
-                credits = 100
-                amount = 10
+                credits = 10
+                amount = 49
                 break;
-            case "Advanced":
-                plan = 'Advanced'
-                credits = 500
-                amount = 50
-                break;
-            case "Business":
-                plan = 'Business'
-                credits = 5000
-                amount = 250
+            case "Pro":
+                plan = 'Pro'
+                credits = 25
+                amount = 99
                 break;
             default:
                 break;

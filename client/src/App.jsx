@@ -9,7 +9,11 @@ import { ToastContainer } from "react-toastify";
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-carbon-500 text-floral relative overflow-x-hidden">
+      {/* Ambient background orbs */}
+      <div className="ambient-orb w-[500px] h-[500px] bg-paprika top-0 -left-64 fixed" />
+      <div className="ambient-orb w-[400px] h-[400px] bg-floral-300 bottom-0 -right-48 fixed" style={{ animationDelay: '2s' }} />
+
       <ToastContainer
         position="bottom-center"
         autoClose={3200}
